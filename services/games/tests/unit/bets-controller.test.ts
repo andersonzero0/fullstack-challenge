@@ -1,19 +1,5 @@
 import { describe, it, expect, mock, beforeAll } from 'bun:test'
 
-// Stub NestJS decorators — @HttpCode / @Controller etc. crash without reflect-metadata
-mock.module('@nestjs/common', () => ({
-  Controller: () => () => {},
-  Post: () => () => {},
-  Get: () => () => {},
-  UseGuards: () => () => {},
-  HttpCode: () => () => {},
-  HttpStatus: { ACCEPTED: 202, OK: 200 },
-  Body: () => () => {},
-  Query: () => () => {},
-  ConflictException: class ConflictException extends Error { constructor(m?: string) { super(m) } },
-  UnprocessableEntityException: class UnprocessableEntityException extends Error { constructor(m?: string) { super(m) } },
-}))
-
 mock.module('../../src/infrastructure/auth/jwt-auth.guard', () => ({
   JwtAuthGuard: class JwtAuthGuard {},
 }))
@@ -118,7 +104,6 @@ describe('BetsController — place bet endpoint', () => {
   })
 
   it('returns 422 when no active round', async () => {
-    const { UnprocessableEntityException } = await import('@nestjs/common')
     const gateway = makeGateway()
     const roundEngine = { getCurrentRoundId: () => null }
 
@@ -130,7 +115,7 @@ describe('BetsController — place bet endpoint', () => {
       gateway as any,
     )
 
-    await expect(controller.placeBetEndpoint({ amount: 1000 }, makeUser())).rejects.toBeInstanceOf(UnprocessableEntityException)
+    await expect(controller.placeBetEndpoint({ amount: 1000 }, makeUser())).rejects.toThrow('ROUND_NOT_IN_BETTING_PHASE')
     expect(gateway.calls).toHaveLength(0)
   })
 })
