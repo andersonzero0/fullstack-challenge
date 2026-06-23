@@ -8,8 +8,8 @@ import { PlaceBetUseCase } from '../../application/use-cases/place-bet/place-bet
 import { CashoutUseCase } from '../../application/use-cases/cashout/cashout.use-case'
 import { RoundNotInBettingPhaseError, DuplicateBetError, RoundNotFoundError } from '../../application/use-cases/place-bet/place-bet.errors'
 import { NoBetActiveError, RoundNotRunningError } from '../../application/use-cases/cashout/cashout.errors'
-import { EntityManager } from '@mikro-orm/core'
-import { BetOrmEntity } from '../../infrastructure/persistence/entities/bet.orm-entity'
+import { EntityManager, FilterQuery } from '@mikro-orm/core'
+import { BetOrmEntity, BetStatus } from '../../infrastructure/persistence/entities/bet.orm-entity'
 import { RoundEngineService } from '../../application/round-engine/round-engine.service'
 import { GameGateway } from '../gateways/game.gateway'
 
@@ -79,7 +79,7 @@ export class BetsController {
     const fork = this.em.fork()
     const bet = await fork.findOne(
       BetOrmEntity,
-      { playerId: user.id, round: roundId, status: { $in: ['PENDING', 'ACTIVE'] } },
+      { playerId: user.id, round: roundId, status: { $in: [BetStatus.PENDING, BetStatus.ACTIVE] } } as FilterQuery<BetOrmEntity>,
     )
     if (!bet) return null
 
