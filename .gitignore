@@ -31,3 +31,10 @@ yarn-error.log*
 
 # Test coverage
 coverage/
+
+.agents/
+.claude/
+.cursor/
+.windsurf/
+CLAUDE.md
+.specs/

@@ -1,0 +1,52 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  games-unit:
+    name: Games Unit Tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: services/games
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - run: bun install
+      - run: bun x tsc --noEmit
+      - run: bun test tests/unit
+
+  wallets-unit:
+    name: Wallets Unit Tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: services/wallets
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - run: bun install
+      - run: bun x tsc --noEmit
+      - run: bun test tests/unit
+
+  frontend-typecheck:
+    name: Frontend TypeScript
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - run: bun install
+      - run: bun x tsc --noEmit

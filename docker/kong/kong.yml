@@ -3,16 +3,65 @@ _format_version: "3.0"
 services:
   - name: games-service
     url: http://games:4001
+    plugins:
+      - name: cors
+        config:
+          origins:
+            - "http://localhost:3000"
+          methods:
+            - GET
+            - POST
+            - OPTIONS
+          headers:
+            - Authorization
+            - Content-Type
+          exposed_headers:
+            - Authorization
+          credentials: true
+          max_age: 3600
+      - name: rate-limiting
+        config:
+          minute: 60
+          policy: local
+          error_code: 429
+          error_message: '{"message":"Too many requests"}'
     routes:
       - name: games-routes
         paths:
           - /games
         strip_path: true
+        protocols:
+          - http
+          - https
+      - name: games-ws-route
+        paths:
+          - /socket.io
+        strip_path: false
+        protocols:
+          - http
+          - https
 
   - name: wallets-service
     url: http://wallets:4002
+    plugins:
+      - name: cors
+        config:
+          origins:
+            - "http://localhost:3000"
+          methods:
+            - GET
+            - POST
+            - OPTIONS
+          headers:
+            - Authorization
+            - Content-Type
+          credentials: true
+          max_age: 3600
     routes:
       - name: wallets-routes
         paths:
           - /wallets
         strip_path: true
+        protocols:
+          - http
+          - https
