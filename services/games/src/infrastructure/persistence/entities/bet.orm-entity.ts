@@ -7,7 +7,7 @@ import {
   Unique,
 } from '@mikro-orm/core'
 import { randomUUID } from 'crypto'
-import { RoundOrmEntity } from './round.orm-entity'
+import type { RoundOrmEntity } from './round.orm-entity'
 
 export enum BetStatus {
   PENDING = 'PENDING',
@@ -23,7 +23,7 @@ export class BetOrmEntity {
   @PrimaryKey({ type: 'uuid' })
   id: string = randomUUID()
 
-  @ManyToOne(() => RoundOrmEntity)
+  @ManyToOne({ entity: 'RoundOrmEntity' })
   round!: RoundOrmEntity
 
   @Property()

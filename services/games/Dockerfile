@@ -9,4 +9,4 @@ COPY . .
 
 EXPOSE 4001
 
-CMD ["sh", "-c", "bun mikro-orm migration:up && bun run src/main.ts"]
+CMD ["sh", "-c", "bunx --bun mikro-orm migration:up && bun run src/main.ts"]
